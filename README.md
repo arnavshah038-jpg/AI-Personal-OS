@@ -1,134 +1,171 @@
---> Persistent AI Memory Assistant
+# 🧠 AI Personal OS
 
-A production-ready AI assistant with long-term memory powered by FastAPI, OpenAI, PostgreSQL, Qdrant, and Docker.
+> **Production-ready AI Personal Assistant with Persistent Long-Term Memory, Semantic Retrieval, Reflection Engine, Multi-Agent Planning, and Retrieval-Augmented Generation (RAG).**
 
-The assistant remembers important information across conversations, retrieves memories using semantic search, consolidates duplicate memories, generates long-term reflections, and automatically manages memory importance over time.
+AI Personal OS is an intelligent memory-centric AI assistant that continuously learns from conversations, stores important information, retrieves relevant memories using semantic search, consolidates duplicate memories, generates long-term reflections, and optimizes context for future interactions.
 
-
-
-# Features
-
---> Long-Term Memory
-
-- Persistent memory storage
-- Semantic memory retrieval
-- Memory importance scoring
-- Memory confidence scoring
-- Automatic memory consolidation
-- Memory forgetting
-- Memory decay
-- Memory boost
-- Reflection memory
-- Episodic memory
-- Context optimization
+Designed as a production-ready AI operating system, it combines **FastAPI**, **OpenAI**, **PostgreSQL**, **Redis**, **Qdrant**, and **Docker** into a scalable architecture.
 
 ---
 
---> AI Capabilities
+# ✨ Features
+
+## 🧠 Persistent Memory System
+
+- Persistent Long-Term Memory
+- Semantic Memory Retrieval
+- Hybrid Memory Ranking
+- Memory Importance Scoring
+- Memory Confidence Scoring
+- Context Optimization
+- Automatic Memory Consolidation
+- Reflection Memory
+- Episodic Memory
+- Memory Forgetting
+- Memory Decay
+- Memory Boost
+
+---
+
+## 🤖 AI Capabilities
 
 - OpenAI Responses API
+- Retrieval-Augmented Generation (RAG)
 - Semantic Search
-- Memory Ranking
-- Hybrid Retrieval
+- Hybrid Retrieval Pipeline
 - Reflection Generation
-- Context Optimization
+- Intelligent Context Optimization
+- Planner Agent
+- Confidence-Based Memory Retrieval
 
+---
 
-
---> 🗄 Database
+## 🗄 Databases
 
 - PostgreSQL
+- Redis
 - Qdrant Vector Database
 
+---
 
-
---> Backend
+## ⚙ Backend
 
 - FastAPI
 - SQLAlchemy
-- Docker
 - REST APIs
+- Docker
+- Docker Compose
 
 ---
 
---> Architecture
+# 🏗 System Architecture
 
 ```
-                User
-                  │
-                  ▼
-            FastAPI Backend
-                  │
-        ┌─────────┴──────────┐
-        ▼                    ▼
-  Memory Engine         OpenAI API
-        │
-        ▼
- ┌──────────────┐
- │ PostgreSQL   │
- └──────────────┘
-        │
-        ▼
- ┌──────────────┐
- │ Qdrant       │
- └──────────────┘
+                           User
+                             │
+                             ▼
+                  Streamlit Dashboard
+                             │
+                             ▼
+                      FastAPI Backend
+                             │
+               ┌─────────────┴──────────────┐
+               ▼                            ▼
+         Planner Agent                 OpenAI API
+               │
+               ▼
+         Chat Service
+               │
+               ▼
+        Memory Engine
+               │
+   ┌───────────┼────────────┐
+   ▼           ▼            ▼
+Redis      PostgreSQL     Qdrant
+(Session)   Metadata      Vector DB
+```
 
+---
 
-
-
---> Tech Stack
+# 🛠 Tech Stack
 
 | Category | Technology |
-|----------|------------|
+|-----------|------------|
 | Language | Python |
 | Backend | FastAPI |
 | AI | OpenAI Responses API |
-| Vector DB | Qdrant |
+| Memory | RAG |
+| Vector Database | Qdrant |
 | Database | PostgreSQL |
+| Cache | Redis |
 | ORM | SQLAlchemy |
 | Frontend | Streamlit |
-| Container | Docker |
+| Containerization | Docker |
 | Embeddings | OpenAI Embeddings |
 
+---
 
+# 📂 Project Structure
 
---> Project Structure
-
-
+```
 app/
-    agents/
-    api/
-    consolidation/
-    core/
-    database/
-    memory/
-    repositories/
-    services/
-    utils/
+├── agents/
+├── api/
+├── consolidation/
+├── core/
+├── database/
+├── exceptions/
+├── memory/
+├── middleware/
+├── models/
+├── rag/
+├── reflection/
+├── repositories/
+├── schemas/
+├── services/
+├── tools/
+└── utils/
 
 frontend/
-
 docs/
-
+scripts/
 tests/
+```
 
+---
 
+# 🧠 Memory Engine
 
+The memory system provides:
 
---> Memory Engine
-
-The project includes:
-
+- Persistent Long-Term Memory
 - Semantic Retrieval
-- Memory Ranking
+- Hybrid Memory Ranking
 - Confidence Scoring
-- Memory Consolidation
 - Reflection Generation
 - Episodic Memory
+- Memory Consolidation
 - Memory Forgetting
-- Memory Boost
 - Memory Decay
+- Memory Boost
 - Context Optimization
+
+---
+
+# 🚀 Quick Start
+
+## Clone Repository
+
+```bash
+git clone https://github.com/arnavshah038-jpg/AI-Personal-OS.git
+cd AI-Personal-OS
+```
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
@@ -140,9 +177,9 @@ Start the complete application:
 docker compose up --build
 ```
 
+---
 
-
---> Backend
+# ▶ Run Backend
 
 ```bash
 uvicorn main:app --reload
@@ -150,7 +187,7 @@ uvicorn main:app --reload
 
 ---
 
---> Frontend
+# 🎨 Run Frontend
 
 ```bash
 streamlit run frontend/dashboard.py
@@ -158,68 +195,78 @@ streamlit run frontend/dashboard.py
 
 ---
 
---> API
+# 📡 REST API
 
---> Chat
+## Chat
 
-```
+```http
 POST /chat
 ```
 
----
+## Memories
 
---> Memories
-
-```
+```http
 GET /memories
 ```
 
----
+## Reflections
 
---> Reflection
-
-```
+```http
 GET /reflections
 ```
 
 ---
 
---> Current Version
+# 📌 Current Version
 
-**v1.0**
+## v1.0
 
-Current capabilities:
+### Implemented
 
-- Persistent Long-Term Memory
-- Semantic Search
-- Reflection Memory
-- Episodic Memory
-- Memory Consolidation
-- Docker Deployment
+- ✅ Persistent Long-Term Memory
+- ✅ Semantic Retrieval
+- ✅ Reflection Memory
+- ✅ Episodic Memory
+- ✅ Memory Consolidation
+- ✅ Memory Confidence Scoring
+- ✅ Context Optimization
+- ✅ Docker Deployment
 
 ---
 
---> Future Roadmap
+# 🗺 Roadmap
 
-- Planner Agent
+## v1.1
+
+- Planner Agent Improvements
 - Tool Calling
+
+## v1.2
+
 - LangGraph Integration
+- Multi-Agent Workflows
+
+## v2.0
+
 - Gmail Integration
 - Calendar Integration
 - GitHub Integration
 - Browser Tools
-- Multi-Agent Workflows
+- Autonomous AI Workflows
 
 ---
 
---> Author
+# 👨‍💻 Author
 
 **Arnav Shah**
 
 AI / LLM Engineer
 
+GitHub:
+https://github.com/arnavshah038-jpg
+
 ---
 
---> License
+# 📄 License
 
-MIT License
+This project is licensed under the MIT License.

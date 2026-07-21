@@ -308,6 +308,18 @@ class MemoryRepository:
 
         for memory in memories:
 
+            # Frequently used memories ko skip karo
+            if memory.access_count >= 5:
+                continue
+
+            # Recently updated memories ko skip karo
+            if (
+                memory.updated_at is not None
+                and memory.updated_at > threshold
+            ):
+                continue
+
+            # Importance minimum 1 tak hi aaye
             if memory.importance > 1:
 
                 memory.importance -= 1

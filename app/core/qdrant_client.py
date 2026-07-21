@@ -1,12 +1,13 @@
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
+from app.core.config import settings
 from app.utils.logger import logger
 
 
 qdrant = QdrantClient(
-    host="localhost",
-    port=6333,
+    host=settings.QDRANT_HOST,
+    port=settings.QDRANT_PORT,
 )
 
 COLLECTION_NAME = "memories"

@@ -9,6 +9,7 @@ venv/
 
 # Environment Variables
 .env
+.env.*
 
 # IDE
 .vscode/
@@ -20,6 +21,7 @@ venv/
 
 # Logs
 *.log
+logs/
 
 # OS Files
 .DS_Store
@@ -36,5 +38,27 @@ build/
 dist/
 *.egg-info/
 
+# Docker
+*.pid
+
 # Qdrant
+qdrant_data/
+qdrant_storage/
 storage/
+
+# Backups
+*.backup
+
+# Python cache
+.mypy_cache/
+.coverage
+
+# Local files
+*.swp
+
+# Backup files
+*_backup.py
+*.old.yml
+
+# Temporary test files
+test_*.py

@@ -72,6 +72,15 @@ def create_memory(
             memory_type=request.memory_type,
         )
 
+        # Save memory vector into Qdrant
+        VectorStore.save_memory(
+            session_id=memory.session_id,
+            memory_id=memory.id,
+            memory=memory.memory,
+            memory_type=memory.memory_type,
+            importance=memory.importance,
+        )
+
         return {
             "message": "Memory created successfully.",
             "id": memory.id,

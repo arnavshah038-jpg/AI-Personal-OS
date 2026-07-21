@@ -3,16 +3,20 @@ from openai import OpenAIError
 
 from app.core.config import settings
 from app.core.openai_client import client
+from app.core.prompt_builder import build_memory_prompt
 from app.database.session import SessionLocal
 from app.exceptions.custom_exceptions import AIServiceError
 from app.memory.chat_memory import ChatMemory
 from app.memory.memory_consolidator import MemoryConsolidator
+from app.memory.memory_decay_manager import MemoryDecayManager
+from app.memory.memory_boost_manager import MemoryBoostManager
 from app.memory.memory_extractor import MemoryExtractor
 from app.memory.memory_forgetter import MemoryForgetter
 from app.memory.memory_importance import MemoryImportance
 from app.memory.memory_manager import MemoryManager
 from app.memory.memory_type_classifier import MemoryTypeClassifier
-from app.memory.hybrid_retriever import HybridRetriever
+
+from app.memory.memory_retriever import MemoryRetriever
 from app.memory.vector_store import VectorStore
 from app.repositories.memory_repository import MemoryRepository
 from app.utils.logger import logger
@@ -48,6 +52,10 @@ def chat(
             message
         )
 
+        logger.info(
+            f"FORGET DECISION RESULT: {forget_decision}"
+        )
+
         if forget_decision.action == "YES":
 
             db = SessionLocal()
@@ -76,7 +84,10 @@ def chat(
                         f"Forgot memory: {memory.memory}"
                     )
 
-                    return "Okay! I've forgotten that."
+                    return {
+                        "response": "Got it — I’ll forget that memory and won’t use it going forward.",
+                        "sources": []
+                    }
 
             finally:
 
@@ -95,10 +106,17 @@ def chat(
         # (Semantic + Episode + Reflection - all in one)
         # --------------------------------------------------
 
-        memory_context = HybridRetriever.retrieve(
+        memory_result = MemoryRetriever.retrieve(
             session_id=session_id,
             query=message,
         )
+
+        logger.info(
+            f"Memory Sources: {memory_result.get('sources')}"
+        )
+
+        memory_context = memory_result["context"]
+        memory_sources = memory_result["sources"]
 
         # --------------------------------------------------
         # Context Optimization
@@ -110,15 +128,13 @@ def chat(
 
         if memory_context:
 
+            memory_prompt = build_memory_prompt(
+                memory_context
+            )
+
             history.insert(
                 0,
-                {
-                    "role": "system",
-                    "content": (
-                        "Use the following user memories only when relevant.\n\n"
-                        f"{memory_context}"
-                    ),
-                },
+                memory_prompt
             )
 
         # --------------------------------------------------
@@ -131,6 +147,10 @@ def chat(
         )
 
         ai_response = response.output_text
+
+        logger.info(
+            f"Memory Sources Used: {memory_sources}"
+        )
 
         ChatMemory.save_message(
             session_id=session_id,
@@ -269,7 +289,7 @@ def chat(
                             decision.new_memory
                         )
 
-                        MemoryRepository.update_memory(
+                        MemoryRepository.update_memory_by_text(
                             db=db,
                             session_id=session_id,
                             old_memory=memory.memory,
@@ -310,6 +330,12 @@ def chat(
             )
 
         # --------------------------------------------------
+        # Memory Boost
+        # --------------------------------------------------
+
+        MemoryBoostManager.run()
+
+        # --------------------------------------------------
         # Conversation Summary
         # --------------------------------------------------
 
@@ -317,11 +343,23 @@ def chat(
             session_id,
         )
 
+        # --------------------------------------------------
+        # Memory Decay
+        # --------------------------------------------------
+
+        MemoryDecayManager.run()
+
         logger.info(
             f"[{request_id}] Response generated successfully."
         )
 
-        return ai_response
+        return {
+            "response": ai_response,
+            "sources": memory_result.get(
+                "sources",
+                []
+            )
+        }
 
     except OpenAIError as e:
 

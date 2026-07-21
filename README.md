@@ -1,68 +1,225 @@
---> (AI Personal OS)
+--> Persistent AI Memory Assistant
 
-An AI-powered personal memory system that lets you capture, search, and reflect on everything that matters to you. Built with **FastAPI**, **Streamlit**, **PostgreSQL**, **Qdrant**, and **OpenAI Embeddings**, it combines structured storage with semantic search and AI-driven reflection to act as a second brain for your facts, preferences, goals, and projects.
+A production-ready AI assistant with long-term memory powered by FastAPI, OpenAI, PostgreSQL, Qdrant, and Docker.
+
+The assistant remembers important information across conversations, retrieves memories using semantic search, consolidates duplicate memories, generates long-term reflections, and automatically manages memory importance over time.
+
+
+
+# Features
+
+--> Long-Term Memory
+
+- Persistent memory storage
+- Semantic memory retrieval
+- Memory importance scoring
+- Memory confidence scoring
+- Automatic memory consolidation
+- Memory forgetting
+- Memory decay
+- Memory boost
+- Reflection memory
+- Episodic memory
+- Context optimization
 
 ---
 
-Features
+--> AI Capabilities
 
-| Feature | Description |
-|
-| Memory CRUD | Create, read, update, and delete memories through a clean REST API |
-| Semantic Search | Find relevant memories by meaning, not just keywords, powered by Qdrant vector search |
-| AI Reflection Engine | Generates AI-driven reflections and insights from your stored memories |
-| Dashboard Analytics | Visual overview of memory health, types, and importance |
-| Memory Timeline | Track how your memory base grows over time |
-| Importance Tracking | Prioritize memories with a 1–10 importance scale |
-| Export Memories | Download your entire memory base as a CSV file |
-| PostgreSQL Storage | Reliable, structured persistence for all memory data |
-| FastAPI REST APIs | Fast, typed, and well-documented backend endpoints |
-| Streamlit Dashboard | Interactive frontend for exploring and managing memories |
+- OpenAI Responses API
+- Semantic Search
+- Memory Ranking
+- Hybrid Retrieval
+- Reflection Generation
+- Context Optimization
+
+
+
+--> 🗄 Database
+
+- PostgreSQL
+- Qdrant Vector Database
+
+
+
+--> Backend
+
+- FastAPI
+- SQLAlchemy
+- Docker
+- REST APIs
 
 ---
 
-Tech Stack
+--> Architecture
 
-- Language: Python
-- Backend: FastAPI
-- Frontend: Streamlit
-- Database: PostgreSQL
-- Vector Store:** Qdrant
-- Embeddings:** OpenAI Embeddings
-- ORM: SQLAlchemy
-- Visualization: Plotly
+```
+                User
+                  │
+                  ▼
+            FastAPI Backend
+                  │
+        ┌─────────┴──────────┐
+        ▼                    ▼
+  Memory Engine         OpenAI API
+        │
+        ▼
+ ┌──────────────┐
+ │ PostgreSQL   │
+ └──────────────┘
+        │
+        ▼
+ ┌──────────────┐
+ │ Qdrant       │
+ └──────────────┘
 
 
 
-Project Structure
 
-```text
-app/          # Core backend application (API routes, services, repositories, models)
-frontend/     # Streamlit dashboard and UI pages
-docs/         # Project documentation
-tests/        # Test suite
+--> Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Language | Python |
+| Backend | FastAPI |
+| AI | OpenAI Responses API |
+| Vector DB | Qdrant |
+| Database | PostgreSQL |
+| ORM | SQLAlchemy |
+| Frontend | Streamlit |
+| Container | Docker |
+| Embeddings | OpenAI Embeddings |
+
+
+
+--> Project Structure
+
+
+app/
+    agents/
+    api/
+    consolidation/
+    core/
+    database/
+    memory/
+    repositories/
+    services/
+    utils/
+
+frontend/
+
+docs/
+
+tests/
+
+
+
+
+--> Memory Engine
+
+The project includes:
+
+- Semantic Retrieval
+- Memory Ranking
+- Confidence Scoring
+- Memory Consolidation
+- Reflection Generation
+- Episodic Memory
+- Memory Forgetting
+- Memory Boost
+- Memory Decay
+- Context Optimization
+
+---
+
+# 🐳 Docker
+
+Start the complete application:
+
+```bash
+docker compose up --build
 ```
 
 
 
- Getting Started
-
-Start the Backend API
+--> Backend
 
 ```bash
 uvicorn main:app --reload
 ```
 
-### 2. Launch the Dashboard
+---
+
+--> Frontend
 
 ```bash
-streamlit run frontend/pages/dashboard.py
+streamlit run frontend/dashboard.py
 ```
 
-The API will be available at `http://127.0.0.1:8000` and the Streamlit dashboard will open automatically in your browser.
+---
 
+--> API
 
+--> Chat
 
-Author
+```
+POST /chat
+```
 
-Arnav Shah
+---
+
+--> Memories
+
+```
+GET /memories
+```
+
+---
+
+--> Reflection
+
+```
+GET /reflections
+```
+
+---
+
+--> Current Version
+
+**v1.0**
+
+Current capabilities:
+
+- Persistent Long-Term Memory
+- Semantic Search
+- Reflection Memory
+- Episodic Memory
+- Memory Consolidation
+- Docker Deployment
+
+---
+
+--> Future Roadmap
+
+- Planner Agent
+- Tool Calling
+- LangGraph Integration
+- Gmail Integration
+- Calendar Integration
+- GitHub Integration
+- Browser Tools
+- Multi-Agent Workflows
+
+---
+
+--> Author
+
+**Arnav Shah**
+
+AI / LLM Engineer
+
+---
+
+--> License
+
+MIT License

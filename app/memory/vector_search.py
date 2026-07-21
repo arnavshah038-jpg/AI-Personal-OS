@@ -13,6 +13,7 @@ from app.memory.embedding import EmbeddingGenerator
 from app.repositories.memory_repository import (
     MemoryRepository,
 )
+from app.utils.logger import logger
 
 
 class VectorSearch:
@@ -46,7 +47,9 @@ class VectorSearch:
         ).points
 
         if not results:
-            print("No vector search results found.")
+            logger.info(
+                "No vector search results found."
+            )
             return []
 
         db = SessionLocal()
@@ -57,15 +60,13 @@ class VectorSearch:
 
             for point in results:
 
-                print("=" * 60)
-                print("Payload:", point.payload)
-                print("Score:", point.score)
+                logger.debug(
+                    f"Qdrant Result | Payload={point.payload} | Score={point.score}"
+                )
 
                 memory_id = point.payload.get(
                     "memory_id"
                 )
-
-                print("Memory ID:", memory_id)
 
                 # ------------------------------------
                 # Update access statistics
@@ -73,8 +74,8 @@ class VectorSearch:
 
                 if memory_id is not None:
 
-                    print(
-                        f"Touching memory {memory_id}"
+                    logger.debug(
+                        f"Updating memory access | ID={memory_id}"
                     )
 
                     MemoryRepository.touch_memory(
@@ -84,8 +85,8 @@ class VectorSearch:
 
                 else:
 
-                    print(
-                        "memory_id NOT FOUND in payload!"
+                    logger.warning(
+                        "memory_id missing in Qdrant payload"
                     )
 
                 # ------------------------------------
@@ -94,8 +95,8 @@ class VectorSearch:
 
                 if point.score < score_threshold:
 
-                    print(
-                        "Skipped (score below threshold)"
+                    logger.debug(
+                        "Skipped vector result due to low similarity score"
                     )
 
                     continue
@@ -114,6 +115,10 @@ class VectorSearch:
                             1,
                         ),
                         "score": point.score,
+                        "created_at": point.payload.get(
+                            "created_at"
+                        ),
+                        "access_count": 0,
                     }
                 )
 
@@ -140,8 +145,28 @@ class VectorSearch:
                 "general",
             )
 
+            confidence = memory.get(
+                "confidence",
+                0,
+            )
+
+            importance = memory.get(
+                "importance",
+                1,
+            )
+
             formatted.append(
-                f"[{memory_type}] {memory['memory']}"
+                f"""
+[{memory_type}]
+Memory:
+{memory['memory']}
+
+Confidence:
+{confidence}
+
+Importance:
+{importance}/10
+"""
             )
 
         return "\n".join(

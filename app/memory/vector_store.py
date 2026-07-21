@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 
 from qdrant_client.models import (
@@ -43,6 +44,10 @@ class VectorStore:
                         "memory": memory,
                         "memory_type": memory_type,
                         "importance": importance,
+                        "created_at": str(
+                            datetime.utcnow()
+                        ),
+                        "access_count": 0,
                     },
                 )
             ],

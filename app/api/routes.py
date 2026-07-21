@@ -36,7 +36,7 @@ def chat_api(
     )
 
     return ChatResponse(
-        response=answer,
+        **answer
     )
 
 

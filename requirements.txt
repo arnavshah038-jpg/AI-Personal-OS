@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+openai
+sqlalchemy
+psycopg[binary]
+redis
+qdrant-client
+streamlit
+httpx
+tenacity
+pytest

@@ -10,7 +10,7 @@ No PyTorch or local ML models: embeddings come from the OpenAI API, so the Docke
 
 - Conversational backend: session-based chat with persistent history in PostgreSQL, structured error handling and logging.
 - Multi-layered memory: persistent, semantic, episodic and reflective memories, plus decay, boost, forgetting and consolidation.
-- Hybrid retrieval: semantic search in Qdrant combined with episodic, reflective and always-on persistent memories, scored by a custom **Memory Ranker.
+- Hybrid retrieval: semantic search in Qdrant combined with episodic, reflective and always-on persistent memories, scored by a custom Memory Ranker.
 - Context Optimizer: deduplicates and compresses memories under a token budget before they are injected into the LLM prompt.
 - Reflection Generator: synthesizes higher-level insights from episodic memories for long-term personalization.
 - Conversation summarization: trigger-based rolling summaries to keep long chats coherent.
@@ -50,10 +50,10 @@ Each candidate memory is scored as:
 
 ### Memory lifecycle
 
-- **Boost:** a memory gains strength when it is retrieved and used, or when the same fact is seen again.
-- **Decay:** strength decays exponentially over time; important memories decay more slowly. Runs hourly.
-- **Forgetting:** weak, low-importance, non-persistent memories are archived and removed from Qdrant.
-- **Consolidation:** old episodic memories are merged into durable semantic facts.
+- Boost: a memory gains strength when it is retrieved and used, or when the same fact is seen again.
+- Decay: strength decays exponentially over time; important memories decay more slowly. Runs hourly.
+- Forgetting: weak, low-importance, non-persistent memories are archived and removed from Qdrant.
+- Consolidation: old episodic memories are merged into durable semantic facts.
 
 ## Services (Docker Compose)
 

@@ -1,5 +1,10 @@
 # AI Personal OS
 
+[![CI](https://github.com/arnavshah038-jpg/AI-Personal-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/arnavshah038-jpg/AI-Personal-OS/actions/workflows/ci.yml)
+
+Live demo: https://ai-personal-os-1r19.onrender.com
+(free tier: if the app is asleep, the first load can take about a minute. Try: "My name is Arnav and I love FastAPI", then click "New session" and ask "What is my name?")
+
 A memory-augmented conversational AI platform. It remembers who you are across sessions using a multi-layered memory system, hybrid retrieval, and automatic reflection.
 
 Stack: Python · FastAPI · OpenAI API (Responses + Embeddings) · PostgreSQL · Redis · Qdrant · Streamlit · Docker Compose
@@ -150,4 +155,15 @@ tests/
 
 ## Deployment
 
-See [DEPLOY_AWS.md](DEPLOY_AWS.md) for deploying to an AWS EC2 instance with Docker Compose.
+Live demo (free tier, no credit card): the app runs on Render (API + Streamlit UI in one container), with managed free tiers for the data layer:
+
+| Component | Service |
+|---|---|
+| API + UI | Render (Docker) |
+| PostgreSQL | Neon |
+| Vector store | Qdrant Cloud |
+| Redis | Redis Cloud |
+
+Production-style setup with all five services: see the Docker Compose quick start above, or [DEPLOY_AWS.md](DEPLOY_AWS.md) for AWS EC2.
+
+CI: every push runs unit tests and validates the Docker build via GitHub Actions.

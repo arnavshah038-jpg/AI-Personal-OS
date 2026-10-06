@@ -1,5 +1,6 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+from qdrant_client.models import (Distance, VectorParams, PointStruct, Filter,
+                                  FieldCondition, MatchValue, PayloadSchemaType)
 from .config import settings
 
 COLLECTION = "memories"
@@ -9,6 +10,12 @@ _q = QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key or No
 def ensure_collection():
     if not _q.collection_exists(COLLECTION):
         _q.create_collection(COLLECTION, vectors_config=VectorParams(size=settings.embed_dim, distance=Distance.COSINE))
+    # Qdrant Cloud filter ke liye payload index maangta hai
+    for field in ("user_id", "kind"):
+        try:
+            _q.create_payload_index(COLLECTION, field_name=field, field_schema=PayloadSchemaType.KEYWORD)
+        except Exception:
+            pass
 
 
 def upsert(mem_id: str, vec: list[float], payload: dict):

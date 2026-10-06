@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -28,6 +29,10 @@ SYSTEM = ("You are a personal AI assistant with long-term memory. Use the memory
 def maintenance_once():
     with SessionLocal() as db:
         d, f = lifecycle.decay_all(db), lifecycle.forget(db)
+        try:
+            vector.ping()
+        except Exception:
+            log.warning("qdrant ping failed")
         log.info("maintenance: decayed=%s forgotten=%s", d, f)
         return {"decayed": d, "forgotten": f}
 
@@ -43,8 +48,11 @@ async def _maintenance_loop():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(engine)
-    vector.ensure_collection()
+    try:
+        Base.metadata.create_all(engine)
+        vector.ensure_collection()
+    except Exception:
+        log.exception("startup init failed (DB/Qdrant reachable hain?)")
     task = asyncio.create_task(_maintenance_loop())
     yield
     task.cancel()
@@ -80,6 +88,12 @@ def health():
     return {"status": "ok"}
 
 
+@app.get("/health/deep")
+def health_deep(db: Session = Depends(get_db)):
+    db.execute(text("select 1"))
+    return {"status": "ok", "qdrant_points": vector.ping()}
+
+
 def post_chat(session_id: str, user_id: str, user_msg: str, reply: str):
     """Background: memory writes, reflection, summary (user ko wait nahi karna padta)."""
     try:
@@ -97,6 +111,8 @@ def post_chat(session_id: str, user_id: str, user_msg: str, reply: str):
 def chat(body: ChatIn, bg: BackgroundTasks, db: Session = Depends(get_db)):
     if cache.hit_rate_limit(body.user_id):
         raise HTTPException(429, "too many requests")
+    if cache.hit_daily_limit():
+        raise HTTPException(429, "demo ka daily limit poora ho gaya, kal try karo")
     if not db.get(ChatSession, body.session_id):
         db.add(ChatSession(id=body.session_id, user_id=body.user_id))
         db.commit()

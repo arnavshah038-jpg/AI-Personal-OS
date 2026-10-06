@@ -9,10 +9,12 @@ HEADERS = {"X-API-Key": os.getenv("APP_API_KEY", "")}
 st.set_page_config(page_title="AI Personal OS", page_icon="🧠", layout="wide")
 st.session_state.setdefault("sid", uuid.uuid4().hex[:12])
 st.session_state.setdefault("msgs", [])
+# DEMO_MODE=1: har visitor ka alag user id, taaki public demo mein memories mix na hon
+st.session_state.setdefault("uid", f"guest-{uuid.uuid4().hex[:8]}" if os.getenv("DEMO_MODE") == "1" else "default")
 
 with st.sidebar:
     st.title("🧠 AI Personal OS")
-    user = st.text_input("User ID", "default")
+    user = st.text_input("User ID", st.session_state.uid)
     if st.button("New session"):
         st.session_state.update(sid=uuid.uuid4().hex[:12], msgs=[])
         st.rerun()

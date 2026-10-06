@@ -29,3 +29,18 @@ def hit_rate_limit(user_id: str) -> bool:
         return n > settings.rate_limit_per_min
     except redis.RedisError:
         return False  # redis down ho to bhi chat chalne do
+
+
+def hit_daily_limit() -> bool:
+    """Public demo ka kharcha rokne ke liye global daily cap."""
+    if settings.demo_daily_limit <= 0:
+        return False
+    try:
+        from datetime import date
+        k = f"daily:{date.today().isoformat()}"
+        n = _r.incr(k)
+        if n == 1:
+            _r.expire(k, 86400)
+        return n > settings.demo_daily_limit
+    except redis.RedisError:
+        return False

@@ -1,0 +1,13 @@
+name: Keep demo awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    if: ${{ vars.DEMO_URL != '' }}
+    steps:
+      - run: curl -fsS --max-time 60 "${{ vars.DEMO_URL }}/_stcore/health"

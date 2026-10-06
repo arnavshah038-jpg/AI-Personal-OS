@@ -3,7 +3,7 @@ from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, Fi
 from .config import settings
 
 COLLECTION = "memories"
-_q = QdrantClient(url=settings.qdrant_url)
+_q = QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key or None, timeout=30)
 
 
 def ensure_collection():
@@ -23,3 +23,8 @@ def search(vec: list[float], user_id: str, limit: int = 20):
 def delete(ids: list[str]):
     if ids:
         _q.delete(COLLECTION, points_selector=ids)
+
+
+def ping() -> int:
+    """Qdrant ko active rakhta hai (free cluster inactivity pe suspend hota hai)."""
+    return _q.count(COLLECTION).count

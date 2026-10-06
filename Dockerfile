@@ -5,6 +5,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY app app
 COPY ui ui
+COPY deploy deploy
 RUN useradd -m appuser
 USER appuser
 EXPOSE 8000 8501

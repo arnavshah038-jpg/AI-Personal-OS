@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://aipos:aipos@localhost:5433/aipos"
     redis_url: str = "redis://localhost:6379/0"
     qdrant_url: str = "http://localhost:6333"
+    qdrant_api_key: str = ""        # Qdrant Cloud ke liye
+    demo_daily_limit: int = 0       # public demo: din ke max chats (0 = off)
     app_api_key: str = ""
     summarize_every: int = 12      # itne messages ke baad conversation summary
     reflect_every: int = 8         # itne episodic memories ke baad reflection

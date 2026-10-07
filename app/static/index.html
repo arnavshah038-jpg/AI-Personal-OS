@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Personal OS</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233446e8'/%3E%3Ccircle cx='11' cy='16' r='4' fill='%23fff'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%23f2b45a'/%3E%3Ccircle cx='22' cy='22' r='3' fill='%23b79bff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#eef1f6;--card:#fff;--ink:#151a2e;--mute:#667090;--line:#dce1ee;--blue:#3446e8;--panel:#131830;--panel2:#1c2245;--ptx:#e8ebf8;--pmute:#8d95ba;
+--persistent:#f2b45a;--semantic:#5cc8e8;--episodic:#8e98c4;--reflection:#b79bff;
+--sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--serif:"Newsreader",Georgia,"Times New Roman",serif}
+*{box-sizing:border-box;margin:0}html,body{height:100%}
+body{font:15px/1.5 var(--sans);background:var(--paper);color:var(--ink);display:flex;flex-direction:column}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+header{height:56px;flex:none;display:flex;align-items:center;gap:14px;padding:0 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--blue);display:grid;place-items:center}
+.logo svg{width:18px}
+header h1{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.sp{flex:1}
+#pill{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--mute)}
+#pill i{width:8px;height:8px;border-radius:50%;background:#bbb}#pill i.ok{background:#22b573}#pill i.bad{background:#e5484d}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:9px;font-weight:500;transition:background .15s}
+.btn:hover{background:var(--paper)}
+#tg{display:none}
+.main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 360px}
+.chat{display:flex;flex-direction:column;min-height:0}
+#feed{flex:1;overflow-y:auto;padding:32px 20px 12px}
+.col{max-width:700px;margin:0 auto}
+.m{max-width:700px;margin:0 auto 22px;display:flex;flex-direction:column}
+.m.user{align-items:flex-end}
+.m.user .t{background:var(--blue);color:#fff;padding:10px 15px;border-radius:18px 18px 4px 18px;max-width:85%}
+.m.assistant .t{font:400 18px/1.6 var(--serif);max-width:92%}
+code{font:13px ui-monospace,Menlo,monospace;background:#e6e9f4;padding:1px 5px;border-radius:5px}
+.rec{margin-top:8px;font-size:13px}
+.rec>button{border:0;background:none;color:var(--mute);padding:0;display:flex;align-items:center;gap:6px}
+.rec>button:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue)}
+.rec ul{list-style:none;padding:8px 0 0;display:grid;gap:6px}
+.rec li{display:flex;gap:8px;align-items:baseline;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.rec li span{margin-left:auto;color:var(--mute);font-size:12px}
+.k{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block;background:var(--episodic)}
+.k.persistent{background:var(--persistent)}.k.semantic{background:var(--semantic)}.k.reflection{background:var(--reflection)}
+.dots{display:flex;gap:5px;padding:10px 0}.dots i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:b 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+#empty{padding:6vh 0 0}
+#empty h2{font:400 clamp(30px,5vw,44px)/1.1 var(--serif);letter-spacing:-.02em;max-width:14em}
+#empty p{color:var(--mute);margin:14px 0 26px;max-width:34em}
+#empty button{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:14px 2px;font:400 17px/1.4 var(--serif);color:var(--ink)}
+#empty button:last-child{border-bottom:1px solid var(--line)}
+#empty button:hover{color:var(--blue)}
+form{flex:none;padding:8px 20px 20px}
+.box{max-width:700px;margin:0 auto;display:flex;gap:10px;align-items:flex-end;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 16px;box-shadow:0 1px 2px rgba(20,26,46,.04)}
+.box:focus-within{border-color:var(--blue)}
+textarea{flex:1;border:0;outline:0;resize:none;font:inherit;padding:8px 0;max-height:160px;background:none;color:var(--ink)}
+.send{background:var(--blue);color:#fff;border:0;border-radius:11px;padding:9px 16px;font-weight:500}
+.send:disabled{opacity:.5}
+.note{max-width:700px;margin:8px auto 0;color:var(--mute);font-size:12.5px}
+.side{background:var(--panel);color:var(--ptx);overflow-y:auto;padding:22px 20px;border-left:1px solid #000}
+.side h2{font:500 20px/1.2 var(--serif);display:flex;align-items:baseline;gap:8px}
+.side h2 span{font:13px var(--sans);color:var(--pmute)}
+.sub{color:var(--pmute);font-size:13px;margin:6px 0 18px}
+.side h3{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--pmute);margin:20px 0 8px}
+.mi{background:var(--panel2);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px}
+.mi p{line-height:1.4}
+.bar{height:3px;background:#2b3260;border-radius:3px;margin-top:9px;overflow:hidden}.bar b{display:block;height:100%;background:var(--blue);filter:brightness(1.5)}
+.mi.hit{animation:hit 1.6s ease-out}
+@keyframes hit{0%{box-shadow:0 0 0 2px var(--persistent);background:#2a3166}100%{box-shadow:0 0 0 2px transparent}}
+.none{color:var(--pmute);font-size:14px;line-height:1.5}
+@media(max-width:900px){.main{grid-template-columns:1fr}#tg{display:inline-block}
+.side{position:fixed;top:56px;right:0;bottom:0;width:min(360px,92vw);transform:translateX(100%);transition:transform .25s;z-index:5}.side.open{transform:none}#pill{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><svg viewBox="0 0 32 32"><circle cx="11" cy="16" r="4" fill="#fff"/><circle cx="22" cy="10" r="3" fill="#f2b45a"/><circle cx="22" cy="22" r="3" fill="#b79bff"/></svg></div>
+  <h1>AI Personal OS</h1><div class="sp"></div>
+  <div id="pill"><i></i>Checking services</div>
+  <button class="btn" id="new">New session</button>
+  <button class="btn" id="tg">Memory</button>
+</header>
+<div class="main">
+  <section class="chat">
+    <div id="feed"><div class="col" id="empty">
+      <h2>Tell me something worth remembering.</h2>
+      <p>I keep facts across sessions. Share a few, start a new session, then ask what I recall. Your memories appear on the right as they form.</p>
+      <button>My name is Arnav and I'm building backend projects with FastAPI.</button>
+      <button>I prefer Python over Java and I'm learning vector search.</button>
+      <button>What do you remember about me?</button>
+    </div></div>
+    <form id="f"><div class="box">
+      <textarea id="in" rows="1" placeholder="Message AI Personal OS" aria-label="Message"></textarea>
+      <button class="send" id="go">Send</button></div>
+      <p class="note">Memories are saved a few seconds after each reply and tied to this browser.</p></form>
+  </section>
+  <aside class="side" id="side">
+    <h2>What I remember <span id="count">0</span></h2>
+    <p class="sub">Bars show memory strength. Unused memories fade, recalled ones grow.</p>
+    <div id="mem"></div>
+  </aside>
+</div>
+<script>
+const $=s=>document.querySelector(s),LS=localStorage,rid=()=>Math.random().toString(36).slice(2,10);
+const uid=LS.uid||(LS.uid='guest-'+rid());let sid=LS.sid||(LS.sid=rid()),busy=0,hits=new Set();
+const feed=$('#feed'),inp=$('#in'),EMPTY=$('#empty').outerHTML;
+const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/`(.+?)`/g,'<code>$1</code>').replace(/^- /gm,'• ').replace(/\n/g,'<br>');
+async function api(p,o={}){const h={'Content-Type':'application/json'};if(LS.key)h['X-API-Key']=LS.key;
+  const r=await fetch(p,{...o,headers:h});
+  if(r.status===401){LS.key=prompt('This server needs an API key:')||'';if(LS.key)return api(p,o)}
+  if(!r.ok){const e=new Error(r.status);e.status=r.status;throw e}return r.json()}
+function add(role,text,used){const e=$('#empty');if(e)e.remove();
+  const d=document.createElement('div');d.className='m '+role;d.innerHTML=`<div class="t">${md(text)}</div>`;
+  if(used&&used.length){const r=document.createElement('div');r.className='rec';
+    r.innerHTML=`<button>Recalled ${used.length} ${used.length>1?'memories':'memory'}</button><ul hidden>${used.map(u=>`<li><i class="k ${u.kind}"></i>${esc(u.content)}<span>${u.score}</span></li>`).join('')}</ul>`;
+    r.firstChild.onclick=()=>r.lastChild.hidden=!r.lastChild.hidden;d.append(r)}
+  feed.append(d);feed.scrollTop=feed.scrollHeight;return d}
+const KN={persistent:'Core facts',semantic:'Knowledge',reflection:'Insights',episodic:'Recent moments'};
+function render(L){$('#count').textContent=L.length;
+  $('#mem').innerHTML=L.length?Object.keys(KN).map(k=>{const g=L.filter(m=>m.kind===k);
+    return g.length?`<h3><i class="k ${k}"></i>${KN[k]}</h3>`+g.map(m=>`<div class="mi${hits.has(m.content)?' hit':''}"><p>${esc(m.content)}</p><div class="bar" title="Strength ${m.strength}"><b style="width:${Math.round(m.strength*100)}%"></b></div></div>`).join(''):''}).join('')
+    :'<p class="none">Nothing stored yet. Send a message and memories will appear here within a few seconds.</p>';hits.clear()}
+const mem=async()=>{try{render(await api('/memories?user_id='+uid))}catch{}};
+async function health(){const p=$('#pill');try{const h=await api('/health/deep');p.innerHTML=`<i class="ok"></i>${h.qdrant_points} vectors in Qdrant`}catch{p.innerHTML='<i class="bad"></i>API unreachable'}}
+async function send(text){text=(text||inp.value).trim();if(!text||busy)return;busy=1;$('#go').disabled=true;inp.value='';fit();add('user',text);
+  const ty=document.createElement('div');ty.className='m assistant';ty.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';feed.append(ty);feed.scrollTop=feed.scrollHeight;
+  try{const r=await api('/chat',{method:'POST',body:JSON.stringify({session_id:sid,message:text,user_id:uid})});
+    ty.remove();add('assistant',r.reply,r.memories_used);hits=new Set(r.memories_used.map(u=>u.content));[3000,9000,18000].forEach(t=>setTimeout(mem,t))}
+  catch(e){ty.remove();add('assistant',e.status==429?'You have hit the demo limit. Wait a minute and send again, or come back tomorrow.':'The API did not respond. If the server was asleep, wait about a minute and send again.')}
+  busy=0;$('#go').disabled=false;inp.focus()}
+const fit=()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,160)+'px'};
+inp.oninput=fit;inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
+$('#f').onsubmit=e=>{e.preventDefault();send()};
+feed.onclick=e=>{if(e.target.closest('#empty button'))send(e.target.textContent)};
+$('#new').onclick=()=>{sid=LS.sid=rid();feed.innerHTML=EMPTY;inp.focus()};
+$('#tg').onclick=()=>$('#side').classList.toggle('open');
+(async()=>{try{(await api(`/sessions/${sid}/history`)).forEach(m=>add(m.role,m.content))}catch{}mem();health()})();
+</script>
+</body>
+</html>

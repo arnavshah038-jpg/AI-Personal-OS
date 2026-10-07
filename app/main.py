@@ -1,9 +1,10 @@
 import asyncio
 import logging
+from pathlib import Path
 from contextlib import asynccontextmanager
 
 from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import text
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -81,6 +82,16 @@ class ChatIn(BaseModel):
 class ChatOut(BaseModel):
     reply: str
     memories_used: list[dict]
+
+
+@app.get("/", include_in_schema=False)
+def index():
+    return FileResponse(Path(__file__).parent / "static" / "index.html")
+
+
+@app.get("/_stcore/health", include_in_schema=False)  # Render health-check compatibility
+def render_health():
+    return {"status": "ok"}
 
 
 @app.get("/health")
@@ -166,6 +177,8 @@ def memories(user_id: str = "default", db: Session = Depends(get_db)):
 
 @app.post("/maintenance/run", dependencies=[Depends(auth)])
 def run_maintenance(user_id: str = "default", db: Session = Depends(get_db)):
+    if cache.hit_rate_limit("maint-" + user_id) or cache.hit_daily_limit():
+        raise HTTPException(429, "too many requests")
     out = maintenance_once()
     out["consolidated"] = lifecycle.consolidate(db, user_id)
     out["reflections"] = generate_reflections(db, user_id)
